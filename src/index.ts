@@ -2,74 +2,17 @@
  * Port from https://github.com/stacktracejs/error-stack-parser-es
  */
 
-// @ts-expect-error patched to remove the broken type
-import _StackFrameConstructor from 'stackframe'
-
-const StackFrameConstructor = _StackFrameConstructor as unknown as StackFrame
-
-export interface StackFrameOptions {
-  isConstructor?: boolean
-  isEval?: boolean
-  isNative?: boolean
-  isToplevel?: boolean
-  columnNumber?: number
-  lineNumber?: number
-  fileName?: string
-  functionName?: string
-  source?: string
-  args?: any[]
-  evalOrigin?: StackFrame
-}
-
 export interface StackFrame {
-  // eslint-disable-next-line @typescript-eslint/no-misused-new
-  new (obj: StackFrameOptions): StackFrame
-
   args?: any[]
-  getArgs(): any[] | undefined
-  setArgs(args: any[]): void
-
-  evalOrigin?: StackFrame
-  getEvalOrigin(): StackFrame | undefined
-  setEvalOrigin(stackframe: StackFrame): void
-
   isConstructor?: boolean
-  getIsConstructor(): boolean | undefined
-  setIsConstructor(isConstructor: boolean): void
-
   isEval?: boolean
-  getIsEval(): boolean | undefined
-  setIsEval(isEval: boolean): void
-
   isNative?: boolean
-  getIsNative(): boolean | undefined
-  setIsNative(isNative: boolean): void
-
   isToplevel?: boolean
-  getIsToplevel(): boolean | undefined
-  setIsToplevel(isToplevel: boolean): void
-
   columnNumber?: number
-  getColumnNumber(): number | undefined
-  setColumnNumber(columnNumber: number): void
-
   lineNumber?: number
-  getLineNumber(): number | undefined
-  setLineNumber(lineNumber: number): void
-
   fileName?: string
-  getFileName(): string | undefined
-  setFileName(fileName: string): void
-
   functionName?: string
-  getFunctionName(): string | undefined
-  setFunctionName(functionName: string): void
-
   source?: string
-  getSource(): string | undefined
-  setSource(source: string): void
-
-  toString(): string
 }
 
 const FIREFOX_SAFARI_STACK_REGEXP = /(^|@)\S+:\d+/
@@ -114,7 +57,7 @@ export function parseV8OrIE(error: Error) {
     return !!line.match(CHROME_IE_STACK_REGEXP)
   })
 
-  return filtered.map((line) => {
+  return filtered.map((line): StackFrame => {
     if (line.includes('(eval ')) {
       // Throw away eval information until we implement stacktrace.js/stackframe#8
       line = line.replace(/eval code/g, 'eval').replace(/(\(eval at [^()]*)|(,.*$)/g, '')
@@ -134,13 +77,13 @@ export function parseV8OrIE(error: Error) {
     const functionName = (location && sanitizedLine) || undefined
     const fileName = ['eval', '<anonymous>'].includes(locationParts[0]) ? undefined : locationParts[0]
 
-    return new StackFrameConstructor({
+    return {
       functionName,
       fileName,
       lineNumber: locationParts[1] ? +locationParts[1] : undefined,
       columnNumber: locationParts[2] ? +locationParts[2] : undefined,
       source: line,
-    })
+    }
   })
 }
 
@@ -150,16 +93,16 @@ export function parseFFOrSafari(error: Error) {
     return !line.match(SAFARI_NATIVE_CODE_REGEXP)
   })
 
-  return filtered.map((line) => {
+  return filtered.map((line): StackFrame => {
     // Throw away eval information until we implement stacktrace.js/stackframe#8
     if (line.includes(' > eval'))
       line = line.replace(/ line (\d+)(?: > eval line \d+)* > eval:\d+:\d+/g, ':$1')
 
     if (!line.includes('@') && !line.includes(':')) {
       // Safari eval frames only have function names and nothing else
-      return new StackFrameConstructor({
+      return {
         functionName: line,
-      })
+      }
     }
     else {
       const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/
@@ -167,13 +110,13 @@ export function parseFFOrSafari(error: Error) {
       const functionName = (matches && matches[1]) ? matches[1] : undefined
       const locationParts = extractLocation(line.replace(functionNameRegex, ''))
 
-      return new StackFrameConstructor({
+      return {
         functionName,
         fileName: locationParts[0],
         lineNumber: locationParts[1] ? +locationParts[1] : undefined,
         columnNumber: locationParts[2] ? +locationParts[2] : undefined,
         source: line,
-      })
+      }
     }
   })
 }
@@ -198,11 +141,11 @@ export function parseOpera9(e: Error) {
   for (let i = 2, len = lines.length; i < len; i += 2) {
     const match = lineRE.exec(lines[i])
     if (match) {
-      result.push(new StackFrameConstructor({
+      result.push({
         fileName: match[2],
         lineNumber: +match[1],
         source: lines[i],
-      }))
+      })
     }
   }
 
@@ -218,14 +161,12 @@ export function parseOpera10(e: Error) {
   for (let i = 0, len = lines.length; i < len; i += 2) {
     const match = lineRE.exec(lines[i])
     if (match) {
-      result.push(
-        new StackFrameConstructor({
-          functionName: match[3] || undefined,
-          fileName: match[2],
-          lineNumber: match[1] ? +match[1] : undefined,
-          source: lines[i],
-        }),
-      )
+      result.push({
+        functionName: match[3] || undefined,
+        fileName: match[2],
+        lineNumber: match[1] ? +match[1] : undefined,
+        source: lines[i],
+      })
     }
   }
 
@@ -254,13 +195,13 @@ export function parseOpera11(error: Error) {
       ? undefined
       : argsRaw.split(',')
 
-    return new StackFrameConstructor({
+    return {
       functionName,
       args,
       fileName: locationParts[0],
       lineNumber: locationParts[1] ? +locationParts[1] : undefined,
       columnNumber: locationParts[2] ? +locationParts[2] : undefined,
       source: line,
-    })
+    }
   })
 }
