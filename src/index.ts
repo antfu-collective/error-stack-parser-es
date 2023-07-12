@@ -137,8 +137,8 @@ export function parseV8OrIE(error: Error) {
     return new StackFrameConstructor({
       functionName,
       fileName,
-      lineNumber: +locationParts[1]!,
-      columnNumber: +locationParts[2]!,
+      lineNumber: locationParts[1] ? +locationParts[1] : undefined,
+      columnNumber: locationParts[2] ? +locationParts[2] : undefined,
       source: line,
     })
   })
@@ -170,8 +170,8 @@ export function parseFFOrSafari(error: Error) {
       return new StackFrameConstructor({
         functionName,
         fileName: locationParts[0],
-        lineNumber: +locationParts[1]!,
-        columnNumber: +locationParts[2]!,
+        lineNumber: locationParts[1] ? +locationParts[1] : undefined,
+        columnNumber: locationParts[2] ? +locationParts[2] : undefined,
         source: line,
       })
     }
@@ -222,7 +222,7 @@ export function parseOpera10(e: Error) {
         new StackFrameConstructor({
           functionName: match[3] || undefined,
           fileName: match[2],
-          lineNumber: +match[1],
+          lineNumber: match[1] ? +match[1] : undefined,
           source: lines[i],
         }),
       )
@@ -258,8 +258,8 @@ export function parseOpera11(error: Error) {
       functionName,
       args,
       fileName: locationParts[0],
-      lineNumber: +locationParts[1]!,
-      columnNumber: +locationParts[2]!,
+      lineNumber: locationParts[1] ? +locationParts[1] : undefined,
+      columnNumber: locationParts[2] ? +locationParts[2] : undefined,
       source: line,
     })
   })

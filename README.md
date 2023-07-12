@@ -4,6 +4,16 @@
 
 A port of [stacktracejs/error-stack-parser](https://github.com/stacktracejs/error-stack-parser), rewrite with TypeScript and ES Modules.
 
+## Usage
+
+```ts
+import { parse } from 'error-stack-parser-es'
+
+const stacktrace = parse(new Error('BOOM!'))
+```
+
+Refer to [stacktracejs/error-stack-parser](https://github.com/stacktracejs/error-stack-parser) for more details.
+
 ## License
 
 [MIT](./LICENSE) License © 2023-PRESENT [Anthony Fu](https://github.com/antfu)
