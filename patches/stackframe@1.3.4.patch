@@ -1,0 +1,15 @@
+diff --git a/package.json b/package.json
+index 3076702264a861420fa6655467d280dc143c7e90..c17d4162437651778c2d1272f62886de7d0a8258 100644
+--- a/package.json
++++ b/package.json
+@@ -41,7 +41,6 @@
+     "url": "https://github.com/stacktracejs/stackframe/issues"
+   },
+   "main": "./stackframe.js",
+-  "typings": "./stackframe.d.ts",
+   "files": [
+     "LICENSE",
+     "README.md",
+diff --git a/stackframe.d.ts b/stackframe.d.ts
+deleted file mode 100644
+index 76356ecec8143b32f39282accb9cfd2d70b88a4b..0000000000000000000000000000000000000000
