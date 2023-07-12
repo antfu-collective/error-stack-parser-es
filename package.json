@@ -1,7 +1,7 @@
 {
   "name": "error-stack-parser-es",
   "type": "module",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "packageManager": "pnpm@8.6.7",
   "description": "Cross-browser Error parser",
   "maintainers": [
