@@ -25,7 +25,7 @@ const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/
  * @param {Error} error object
  * @return {Array} of StackFrames
  */
-export function parse(error: Error) {
+export function parse(error: Error): StackFrame[] {
   // @ts-expect-error missing stacktrace property
   if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined')
     return parseOpera(error)
@@ -121,7 +121,7 @@ export function parseFFOrSafari(error: Error) {
   })
 }
 
-export function parseOpera(e: Error) {
+export function parseOpera(e: Error): StackFrame[] {
   // @ts-expect-error missing stacktrace property
   if (!e.stacktrace || (e.message.includes('\n') && e.message.split('\n').length > e.stacktrace.split('\n').length))
     return parseOpera9(e)
@@ -174,13 +174,13 @@ export function parseOpera10(e: Error) {
 }
 
 // Opera 10.65+ Error.stack very similar to FF/Safari
-export function parseOpera11(error: Error) {
+export function parseOpera11(error: Error): StackFrame[] {
   // @ts-expect-error missing stack property
   const filtered = error.stack.split('\n').filter((line) => {
     return !!line.match(FIREFOX_SAFARI_STACK_REGEXP) && !line.match(/^Error created at/)
   })
 
-  return filtered.map((line) => {
+  return filtered.map<StackFrame>((line) => {
     const tokens = line.split('@')
     const locationParts = extractLocation(tokens.pop()!)
     const functionCall = (tokens.shift() || '')
