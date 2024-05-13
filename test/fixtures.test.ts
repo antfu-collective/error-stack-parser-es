@@ -3,7 +3,7 @@ import { parse } from '../src'
 import { CapturedExceptions } from './fixtures/captured-errors'
 
 interface CustomMatchers<R = unknown> {
-  toMatchStackFrame(expected: [string?, any?, string?, number?, number?]): R
+  toMatchStackFrame: (expected: [string?, any?, string?, number?, number?]) => R
 }
 
 declare module 'vitest' {
@@ -33,7 +33,7 @@ expect.extend({
   },
 })
 
-describe('ErrorStackParser', () => {
+describe('errorStackParser', () => {
   describe('#parse', () => {
     it('should not parse IE 9 Error', () => {
       expect(() => {
@@ -237,8 +237,8 @@ describe('ErrorStackParser', () => {
     it('should handle newlines in Error stack messages', () => {
       const stackFrames = parse({
         stack: 'Error: Problem at this\nlocation. Error code:1234\n'
-                + '    at http://path/to/file.js:47:22\n'
-                + '    at foo (http://path/to/file.js:52:15)',
+        + '    at http://path/to/file.js:47:22\n'
+        + '    at foo (http://path/to/file.js:52:15)',
       } as any)
 
       expect(stackFrames.length).toBe(2)
@@ -249,7 +249,7 @@ describe('ErrorStackParser', () => {
     it('should handle webpack eval stacks', () => {
       const stackframes = parse({
         stack: 'ReferenceError: chilxdren is not defined\n '
-                + 'at Layout (eval at proxyClass (webpack:///../react-hot-loader/~/react-proxy/modules/createClassProxy.js?), <anonymous>:4:17)',
+        + 'at Layout (eval at proxyClass (webpack:///../react-hot-loader/~/react-proxy/modules/createClassProxy.js?), <anonymous>:4:17)',
       } as any)
       expect(stackframes.length).toBe(1)
       expect(stackframes[0].fileName).toEqual('webpack:///../react-hot-loader/~/react-proxy/modules/createClassProxy.js?')
