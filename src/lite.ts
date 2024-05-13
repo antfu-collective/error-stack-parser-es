@@ -30,11 +30,13 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
     throw new Error('Cannot parse given Error object')
 }
 
-// Separate line and column numbers from a string of the form: (URI:Line:Column)
-export function extractLocation(urlLike: string) {
+/**
+ * Separate line and column numbers from a string of the form: (URI:Line:Column)
+ */
+export function extractLocation(urlLike: string): [string, string | undefined, string | undefined] {
   // Fail-fast but return locations like "(native)"
   if (!urlLike.includes(':'))
-    return [urlLike]
+    return [urlLike, undefined, undefined]
 
   const regExp = /(.+?)(?::(\d+))?(?::(\d+))?$/
   const parts = regExp.exec(urlLike.replace(/[()]/g, ''))!
