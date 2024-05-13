@@ -14,6 +14,17 @@ const stacktrace = parse(new Error('BOOM!'))
 
 Refer to [stacktracejs/error-stack-parser](https://github.com/stacktracejs/error-stack-parser) for more details.
 
+### Lite API
+
+Additionally, this fork added a lite version of the API representation for the stack frames. You can import it from `error-stack-parser-es/lite`. For example, `line` and `col` instead of `lineNumber` and `columnNumber`.
+
+```ts
+import { parse } from 'error-stack-parser-es/lite'
+
+const stacktrace = parse(new Error('BOOM!'))
+// [{ file: 'file.js', name: 'method', line: 1, col: 2}]
+```
+
 ## License
 
 [MIT](./LICENSE) License © 2023-PRESENT [Anthony Fu](https://github.com/antfu)
