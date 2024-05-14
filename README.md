@@ -25,6 +25,15 @@ const stacktrace = parse(new Error('BOOM!'))
 // [{ file: 'file.js', name: 'method', line: 1, col: 2}]
 ```
 
+It also allows you to parse directly from a stacktrace string (which does not support Opera stacktrace format).
+
+```ts
+import { parseStack } from 'error-stack-parser-es/lite'
+
+const stacktrace = parseStack('Error\n    at method (file.js:1:2)')
+// [{ file: 'file.js', name: 'method', line: 1, col: 2}]
+```
+
 ## License
 
 [MIT](./LICENSE) License © 2023-PRESENT [Anthony Fu](https://github.com/antfu)

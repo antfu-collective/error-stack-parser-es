@@ -31,6 +31,16 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
 }
 
 /**
+ * Parse stack string from V8, Firefox, or IE into an array of StackFrames.
+ */
+export function parseStack(stackString: string, options?: ParseOptions): StackFrameLite[] {
+  if (stackString.match(CHROME_IE_STACK_REGEXP))
+    return parseV8OrIeString(stackString, options)
+  else
+    return parseFFOrSafariString(stackString, options)
+}
+
+/**
  * Separate line and column numbers from a string of the form: (URI:Line:Column)
  */
 export function extractLocation(urlLike: string): [string, string | undefined, string | undefined] {
@@ -53,9 +63,12 @@ function applySlice<T>(lines: T[], options?: ParseOptions) {
 }
 
 export function parseV8OrIE(error: Error, options?: ParseOptions): StackFrameLite[] {
+  return parseV8OrIeString(error.stack!, options)
+}
+
+export function parseV8OrIeString(stack: string, options?: ParseOptions): StackFrameLite[] {
   const filtered = applySlice(
-    // @ts-expect-error missing stack property
-    error.stack.split('\n').filter((line) => {
+    stack.split('\n').filter((line) => {
       return !!line.match(CHROME_IE_STACK_REGEXP)
     }),
     options,
@@ -92,9 +105,12 @@ export function parseV8OrIE(error: Error, options?: ParseOptions): StackFrameLit
 }
 
 export function parseFFOrSafari(error: Error, options?: ParseOptions): StackFrameLite[] {
+  return parseFFOrSafariString(error.stack!, options)
+}
+
+export function parseFFOrSafariString(stack: string, options?: ParseOptions): StackFrameLite[] {
   const filtered = applySlice(
-    // @ts-expect-error missing stack property
-    error.stack.split('\n').filter((line) => {
+    stack.split('\n').filter((line) => {
       return !line.match(SAFARI_NATIVE_CODE_REGEXP)
     }),
     options,
