@@ -6,8 +6,9 @@ import type { ParseOptions, StackFrameLite } from './types'
 export * from './types'
 
 const FIREFOX_SAFARI_STACK_REGEXP = /(^|@)\S+:\d+/
+// eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/optimal-quantifier-concatenation, regexp/no-misleading-capturing-group
 const CHROME_IE_STACK_REGEXP = /^\s*at .*(\S+:\d+|\(native\))/m
-const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/
+const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code\])?$/
 
 /**
  * Given an Error object, extract the most information from it.
@@ -132,7 +133,8 @@ export function parseFFOrSafariString(stack: string, options?: ParseOptions): St
       }
     }
     else {
-      const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/
+      // eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/optimal-quantifier-concatenation
+      const functionNameRegex = /(([^\n\r"\u2028\u2029]*".[^\n\r"\u2028\u2029]*"[^\n\r@\u2028\u2029]*(?:@[^\n\r"\u2028\u2029]*"[^\n\r@\u2028\u2029]*)*(?:[\n\r\u2028\u2029][^@]*)?)?[^@]*)@/
       const matches = line.match(functionNameRegex)
       const functionName = (matches && matches[1]) ? matches[1] : undefined
       const locationParts = extractLocation(line.replace(functionNameRegex, ''))
@@ -161,6 +163,7 @@ export function parseOpera(e: Error, options?: ParseOptions): StackFrameLite[] {
 }
 
 export function parseOpera9(e: Error, options?: ParseOptions): StackFrameLite[] {
+  // eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/optimal-quantifier-concatenation
   const lineRE = /Line (\d+).*script (?:in )?(\S+)/i
   const lines = e.message.split('\n')
   const result: StackFrameLite[] = []
@@ -180,6 +183,7 @@ export function parseOpera9(e: Error, options?: ParseOptions): StackFrameLite[] 
 }
 
 export function parseOpera10(e: Error, options?: ParseOptions): StackFrameLite[] {
+  // eslint-disable-next-line regexp/no-super-linear-backtracking, regexp/optimal-quantifier-concatenation
   const lineRE = /Line (\d+).*script (?:in )?(\S+)(?:: In function (\S+))?$/i
   // @ts-expect-error missing stack property
   const lines = e.stacktrace.split('\n')
