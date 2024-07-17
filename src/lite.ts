@@ -13,6 +13,7 @@ const SAFARI_NATIVE_CODE_REGEXP = /^(eval@)?(\[native code])?$/
  * Given an Error object, extract the most information from it.
  *
  * @param {Error} error object
+ * @param {ParseOptions} options
  * @return {Array} of StackFrames
  */
 export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
@@ -20,14 +21,16 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
   if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined')
     return parseOpera(error, options)
 
-  else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP))
+  if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP))
     return parseV8OrIE(error, options)
 
-  else if (error.stack)
+  if (error.stack)
     return parseFFOrSafari(error, options)
 
-  else
-    throw new Error('Cannot parse given Error object')
+  if (options?.emptyStack)
+    return []
+
+  throw new Error('Cannot parse given Error object')
 }
 
 /**

@@ -25,4 +25,12 @@ export interface ParseOptions {
    * This could save some computation to avoid parsing unneeded stack frames.
    */
   slice?: number | [number, number]
+  /**
+   * Whether to return empty stack or throw an error when `stack` not found.
+   *
+   * By default, `parse` will throw an error when `stack` not found.
+   *
+   * @default false
+   */
+  emptyStack?: boolean
 }
