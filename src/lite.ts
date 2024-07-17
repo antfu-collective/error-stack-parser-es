@@ -21,16 +21,17 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
   if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined')
     return parseOpera(error, options)
 
-  if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP))
+  else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP))
     return parseV8OrIE(error, options)
 
-  if (error.stack)
+  else if (error.stack)
     return parseFFOrSafari(error, options)
 
-  if (options?.emptyStack)
+  else if (options?.emptyStack)
     return []
 
-  throw new Error('Cannot parse given Error object')
+  else
+    throw new Error('Cannot parse given Error object')
 }
 
 /**
