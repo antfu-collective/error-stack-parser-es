@@ -32,5 +32,5 @@ export interface ParseOptions {
    *
    * @default false
    */
-  emptyStack?: boolean
+  allowEmpty?: boolean
 }

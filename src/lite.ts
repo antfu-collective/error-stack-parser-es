@@ -27,7 +27,7 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
   else if (error.stack)
     return parseFFOrSafari(error, options)
 
-  else if (options?.emptyStack)
+  else if (options?.allowEmpty)
     return []
 
   else
