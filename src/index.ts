@@ -7,9 +7,9 @@ import {
   parse as _parse,
   parseFFOrSafari as _parseFFOrSafari,
   parseOpera as _parseOpera,
+  parseOpera9 as _parseOpera9,
   parseOpera10 as _parseOpera10,
   parseOpera11 as _parseOpera11,
-  parseOpera9 as _parseOpera9,
   parseV8OrIE as _parseV8OrIE,
 } from './lite'
 
