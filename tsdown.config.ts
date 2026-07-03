@@ -11,4 +11,6 @@ export default defineConfig({
   outDir: 'dist',
   target: 'es2018',
   tsconfig: 'tsconfig.json',
+  exports: true,
+  publint: true,
 })

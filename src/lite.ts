@@ -58,7 +58,7 @@ export function extractLocation(urlLike: string): [string, string | undefined, s
   return [parts[1], parts[2] || undefined, parts[3] || undefined] as const
 }
 
-function applySlice<T>(lines: T[], options?: ParseOptions) {
+function applySlice<T>(lines: T[], options?: ParseOptions): T[] {
   if (options && options.slice != null) {
     if (Array.isArray(options.slice))
       return lines.slice(options.slice[0], options.slice[1])

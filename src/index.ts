@@ -40,11 +40,11 @@ export function parse(error: Error, options?: ParseOptions): StackFrame[] {
   return stackframesLiteToStackframes(_parse(error, options))
 }
 
-export function parseV8OrIE(error: Error) {
+export function parseV8OrIE(error: Error): StackFrame[] {
   return stackframesLiteToStackframes(_parseV8OrIE(error))
 }
 
-export function parseFFOrSafari(error: Error) {
+export function parseFFOrSafari(error: Error): StackFrame[] {
   return stackframesLiteToStackframes(_parseFFOrSafari(error))
 }
 
