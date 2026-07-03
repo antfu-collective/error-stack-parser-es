@@ -22,7 +22,7 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
   if (typeof error.stacktrace !== 'undefined' || typeof error['opera#sourceloc'] !== 'undefined')
     return parseOpera(error, options)
 
-  else if (error.stack && error.stack.match(CHROME_IE_STACK_REGEXP))
+  else if (error.stack && CHROME_IE_STACK_REGEXP.test(error.stack))
     return parseV8OrIE(error, options)
 
   else if (error.stack)
@@ -39,7 +39,7 @@ export function parse(error: Error, options?: ParseOptions): StackFrameLite[] {
  * Parse stack string from V8, Firefox, or IE into an array of StackFrames.
  */
 export function parseStack(stackString: string, options?: ParseOptions): StackFrameLite[] {
-  if (stackString.match(CHROME_IE_STACK_REGEXP))
+  if (CHROME_IE_STACK_REGEXP.test(stackString))
     return parseV8OrIeString(stackString, options)
   else
     return parseFFOrSafariString(stackString, options)
@@ -222,7 +222,7 @@ export function parseOpera11(error: Error, options?: ParseOptions): StackFrameLi
       .replace(/<anonymous function(: (\w+))?>/, '$2')
       .replace(/\([^)]*\)/g, '') || undefined
     let argsRaw
-    if (functionCall.match(/\(([^)]*)\)/))
+    if (/\([^)]*\)/.test(functionCall))
       argsRaw = functionCall.replace(/^[^(]+\(([^)]*)\)$/, '$1')
 
     const args = (argsRaw === undefined || argsRaw === '[arguments not available]')
